@@ -3,6 +3,8 @@ on:
   schedule:
     - cron: '0 1 * * *'        # 每天 UTC 01:00 = 北京时间 09:00，自动把新活动同步到订阅日历
   workflow_dispatch:           # 也支持手动触发
+permissions:
+  contents: write              # 允许工作流把更新后的日历推送回仓库（Pages 自动发布）
 jobs:
   build:
     runs-on: ubuntu-latest
