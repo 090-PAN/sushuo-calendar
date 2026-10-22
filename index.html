@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>广外南活动日历 · 订阅</title>
+<style>
+  :root{ --bg:#f7f8fa; --card:#fff; --ink:#1f2329; --sub:#646a73; --brand:#3370ff; --brand-d:#245bdb; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"PingFang SC","Microsoft YaHei",Segoe UI,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.6;padding:24px}
+  .wrap{max-width:680px;margin:0 auto;background:var(--card);border-radius:16px;
+        padding:28px 26px;box-shadow:0 4px 20px rgba(0,0,0,.06)}
+  h1{font-size:22px;margin:0 0 6px}
+  h2{font-size:16px;margin:22px 0 8px}
+  p{color:var(--sub);margin:8px 0}
+  .lead{font-size:15px}
+  .btns{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0 6px}
+  .btn{display:inline-block;padding:12px 18px;border-radius:10px;text-decoration:none;
+       font-weight:600;font-size:15px}
+  .btn.primary{background:var(--brand);color:#fff}
+  .btn.primary:active{background:var(--brand-d)}
+  .btn.ghost{background:#eef1f6;color:var(--brand)}
+  ul{margin:8px 0;padding-left:20px;color:var(--sub)}
+  li{margin:4px 0}
+  code{background:#eef1f6;padding:2px 6px;border-radius:5px;font-size:13px}
+  .note{background:#fff7e6;border:1px solid #ffe1a8;border-radius:10px;padding:12px 14px;
+        color:#8a6d3b;font-size:13px;margin-top:14px}
+  hr{border:none;border-top:1px solid #eceef1;margin:22px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📅 广外南活动日历</h1>
+  <p class="lead">一次订阅，活动自动同步进你的手机日历，<b>到点弹提醒</b>，<b>新活动自动出现</b>——不用每次来问 bot，也不用重复设置。</p>
+
+  <div class="btns">
+    <a id="subscribe" class="btn primary" href="#">一键订阅（自动同步）</a>
+    <a id="download" class="btn ghost" href="#">下载 .ics 导入</a>
+  </div>
+  <p style="font-size:13px">订阅 = 日历 App 每隔几小时自动回源拉取，活动有更新就自动改好；下载 = 一次性导入，之后要手动重导。</p>
+
+  <h2>怎么订阅？</h2>
+  <ul>
+    <li><b>iPhone</b>：设置 → 日历 → 账户 → 添加账户 → 其他 → 添加已订阅的日历，粘贴上面的订阅地址（webcal 开头）。</li>
+    <li><b>安卓</b>：系统日历 → 设置 → 添加日历 → 通过链接订阅（不同品牌入口略有差异）。</li>
+    <li><b>电脑</b>：Outlook / Google 日历 →「通过 URL 添加日历」粘贴订阅地址。</li>
+    <li>不会弄？点「下载 .ics」先手动导入也行，等熟悉了再换订阅。</li>
+  </ul>
+
+  <h2>怎么停止推送 / 退订？</h2>
+  <ul>
+    <li>在手机「设置 → 日历 → 账户 → 已订阅的日历」里删除「广外南活动日程」即可，<b>随时可退订，不留任何记录</b>。</li>
+    <li>如果是邮件周报：把你的邮箱从推送名单里删掉，或回复「退订」。</li>
+  </ul>
+
+  <div class="note">本日历由「宿说」整理，数据来自学校官方活动表，时间以主办方最新通知为准。订阅地址里的活动每天自动同步一次。</div>
+
+  <hr>
+  <p style="font-size:12px;color:#9aa0a6">宿说 · 广外南 AI 自律陪伴助手</p>
+</div>
+<script>
+  var base = location.origin + location.pathname.replace(/index\.html$/, '');
+  if (base[base.length-1] !== '/') base += '/';
+  var ics = base + '广外南活动日程.ics';
+  document.getElementById('download').href = ics;
+  document.getElementById('subscribe').href = ics.replace(/^https:/, 'webcal:');
+</script>
+</body>
+</html>
