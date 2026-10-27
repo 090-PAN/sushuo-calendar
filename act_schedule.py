@@ -131,7 +131,7 @@ def fold(line: str) -> str:
     return "\r\n".join(out)
 
 
-def build_ics(events, ttl_hours=6) -> str:
+def build_ics(events, ttl_hours=2) -> str:
     now = dt.datetime.now(dt.timezone.utc)
     stamp = now.strftime("%Y%m%dT%H%M%SZ")
     # 订阅模式关键：告诉客户端多久回来拉一次

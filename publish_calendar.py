@@ -43,7 +43,7 @@ def main():
 
     os.makedirs(SITE, exist_ok=True)
     with open(os.path.join(SITE, "广外南活动日程.ics"), "w", encoding="utf-8", newline="") as f:
-        f.write(ac.build_ics(events, 6))
+        f.write(ac.build_ics(events, 2))
     with open(os.path.join(SITE, "活动日程总览.md"), "w", encoding="utf-8") as f:
         f.write(ac.build_md(events, url_base or None))
     print(f"[ok] 已写入 {SITE}/")
