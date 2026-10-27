@@ -1,10 +1,11 @@
 name: publish-activity-calendar
 on:
   schedule:
-    - cron: '0 1 * * *'        # 每天 UTC 01:00 = 北京时间 09:00，自动把新活动同步到订阅日历
-  workflow_dispatch:           # 也支持手动触发
+    # 每 2 小时自动同步一次（UTC 偶数小时 → 北京时间 08/10/12/.../次日 06）
+    - cron: '0 */2 * * *'
+  workflow_dispatch:           # 也支持手动触发（GitHub 网页一键，约 10 秒完成）
 permissions:
-  contents: write              # 允许工作流把更新后的日历推送回仓库（Pages 自动发布）
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
