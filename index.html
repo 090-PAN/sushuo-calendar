@@ -87,8 +87,15 @@
   .chat-head .dot{width:6px;height:6px;border-radius:99px;background:#22c55e;display:inline-block}
   .chat-head .dot.off{background:#cbd5d1}
   .chat-head .act{margin-left:auto;font-size:12.5px;color:var(--mute);cursor:pointer;
-    background:none;border:0;font-family:inherit;padding:4px 8px;border-radius:6px}
-  .chat-head .act:hover{background:#f2f6f4;color:var(--brand)}
+    background:none;border:0;font-family:inherit;padding:4px 8px;border-radius:6px;
+    text-decoration:none;display:inline-block;line-height:1.5}
+  .chat-head .act:hover{background:#f2f6f4;color:var(--brand);text-decoration:none}
+  /* 页面协议受限时，完整版入口变成主路径，需要显眼 */
+  .chat-head .act.hot{background:var(--brand);color:#fff;font-weight:600;
+    box-shadow:0 2px 8px rgba(18,138,110,.28);animation:pulse 1.8s ease-in-out 3}
+  .chat-head .act.hot:hover{background:var(--brand-d);color:#fff}
+  @keyframes pulse{0%,100%{box-shadow:0 2px 8px rgba(18,138,110,.28)}
+    50%{box-shadow:0 2px 16px rgba(18,138,110,.55)}}
 
   .chat-log{flex:1;overflow-y:auto;padding:18px 18px 8px;display:flex;flex-direction:column;gap:14px;
     scroll-behavior:smooth}
@@ -107,6 +114,9 @@
   .msg.me .bub{background:var(--brand);color:#fff;border-top-right-radius:4px}
   .msg.sys .bub{background:var(--warn-bg);border:1px solid var(--warn-line);color:#7c2d12;
     font-size:13.5px;max-width:100%}
+  .msg.sys .bub .retry{margin-top:8px;background:#fff;border:1px solid var(--warn-line);
+    color:#7c2d12;border-radius:7px;padding:5px 12px;font-size:12.5px;cursor:pointer;
+    font-family:inherit}
   /* 小程序链接：点了也没用，做成可选中复制的样式 */
   .bub .mini{color:var(--brand-d);font-weight:600;border-bottom:1px dashed var(--brand-line);
     cursor:text;user-select:all}
@@ -463,8 +473,44 @@
    ===================================================================== */
 var SUSHUO = {
   apiBase: 'http://172.17.1.46/v1',
-  apiKey: 'app-QwZ9PQsPDuW6Yr8RQO7akOhw'
+  // 如果给 Dify 配了 HTTPS 域名 / 隧道（见《在线体验技术说明.md》方案 A），
+  // 填在这里，本页会自动优先用它 —— 这样 GitHub Pages 上也能正常对话。
+  // 例：apiBaseHttps: 'https://sushuo-dify.example.com/v1'
+  apiBaseHttps: '',
+  apiKey: 'app-QwZ9PQsPDuW6Yr8RQO7akOhw',
+  appUrl: 'http://172.17.1.46/chatbot/XgH70yw6DRBgNKuT'
 };
+
+/* 选出本次实际要用的 API 地址：
+   - 页面是 https、又配了 https 接口 -> 用 https（唯一能在公网页面跑通的组合）
+   - 页面是 https、只有 http 接口 -> 必然被浏览器拦，返回 blocked
+   - 页面是 http / file:// -> 直接用 http 接口 */
+function sushuoApiBase() {
+  var isHttpsPage = (location.protocol === 'https:');
+  var h = (SUSHUO.apiBaseHttps || '').trim();
+  if (isHttpsPage) {
+    if (h) return { base: h, blocked: false };
+    return { base: SUSHUO.apiBase, blocked: true };
+  }
+  return { base: SUSHUO.apiBase, blocked: false };
+}
+
+/* 混合内容拦截时的说明文案（比笼统的「连不上」准确得多） */
+var BLOCKED_MSG =
+  '这个页面是 HTTPS（GitHub Pages），而 Dify 接口是内网 HTTP（' + SUSHUO.apiBase + '）。' +
+  '浏览器硬性禁止「HTTPS 页面」用 fetch 请求「HTTP 接口」，请求根本发不出去 —— ' +
+  '不是密钥问题，也不是校园网问题。\n\n' +
+  '⚡ 首选：点右上角「完整版 ↗」。跳转打开新页面不受这个限制（被拦的只有页面内' +
+  '的 fetch / iframe），那里能正常聊天 —— 需连校园网。\n\n' +
+  '其余办法：\n' +
+  '① 把本页下载到电脑，双击用 file:// 打开 —— 不用服务器，接口能直连；\n' +
+  '② 校园网内跑本地服务：在本页目录执行 python -m http.server 8899，' +
+  '再访问 http://127.0.0.1:8899 —— HTTP 页面能直连；\n' +
+  '③ 长期方案：给 Dify 配 HTTPS 域名（反代 / 隧道），把地址填进文件顶部的 ' +
+  'apiBaseHttps，本页会自动改用它，GitHub Pages 上也能内嵌对话。';
+
+/* 完整版入口在 HTTPS 页面下是主路径：导航不受混合内容限制 */
+var OPEN_HINT = '完整版 ↗';
 
 /* =====================================================================
    自建对话前端（不用 iframe）
@@ -481,6 +527,7 @@ var SUSHUO = {
     chips: document.getElementById('chatSugs'),
     status: document.getElementById('chatStatus'),
     dot: document.getElementById('chatDot'),
+    open: document.getElementById('chatOpen'),
     reset: document.getElementById('chatReset')
   };
   if (!els.list || !els.form) return;
@@ -702,7 +749,9 @@ var SUSHUO = {
   function showError(msg, retryText) {
     var row = document.createElement('div');
     row.className = 'msg sys';
-    row.innerHTML = '<div class="bub">' + esc(msg) +
+    // 错误文案里可能带换行和代码片段，保留排版（转义后再把 \n 变 <br>）
+    var body = esc(msg).replace(/\n/g, '<br>');
+    row.innerHTML = '<div class="bub">' + body +
       (retryText ? '<br><button type="button" class="retry">重试</button>' : '') + '</div>';
     els.list.appendChild(row);
     scrollBottom();
@@ -779,7 +828,10 @@ var SUSHUO = {
       showError(msg, text);
     }
 
-    fetch(SUSHUO.apiBase + '/chat-messages', {
+    var api = sushuoApiBase();
+    if (api.blocked) { fail(BLOCKED_MSG); return; }
+
+    fetch(api.base + '/chat-messages', {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + SUSHUO.apiKey,
@@ -901,8 +953,28 @@ var SUSHUO = {
 
   // ---------- 初始化：拉开场白与建议问题 ----------
   function boot() {
+    // 先看这个页面能不能合法访问接口。HTTPS 页面打 HTTP 接口是浏览器硬拦，
+    // 请求根本发不出去，硬试只会得到一个含义模糊的 Failed to fetch。
+    var api = sushuoApiBase();
+    if (api.blocked) {
+      setStatus('页面协议受限', 'off');
+      // 把「完整版」提成显眼的主按钮 —— 在 HTTPS 页面这是唯一顺畅的路
+      if (els.open) {
+        els.open.className = 'act hot';
+        els.open.textContent = '👉 在这里继续聊（完整版）';
+      }
+      if (els.input) {
+        els.input.placeholder = '本页内嵌对话被浏览器拦了，点上面的「完整版」继续';
+        els.input.disabled = true;
+      }
+      if (els.send) els.send.disabled = true;
+      showError(BLOCKED_MSG, '');
+      setChips(['宿舍空调坏了怎么报修？', '最近压力大，想找人聊聊', '这月有什么活动？', '我想做个心晴测评']);
+      return;
+    }
+
     setStatus('正在连接…', 'wait');
-    fetch(SUSHUO.apiBase + '/parameters', {
+    fetch(api.base + '/parameters', {
       headers: { 'Authorization': 'Bearer ' + SUSHUO.apiKey }
     }).then(function (r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -915,9 +987,11 @@ var SUSHUO = {
     }).catch(function (err) {
       setStatus('未连接', 'off');
       var m = String(err && err.message || err);
-      if (/Failed to fetch|NetworkError/i.test(m)) {
-        showError('连不上 Dify 服务（' + SUSHUO.apiBase + '）。请确认：① 已连校园网；' +
-          '② 本页用 HTTP 打开 —— HTTPS 页面会被浏览器拦住对内网 HTTP 接口的请求。', '');
+      if (/Failed to fetch|NetworkError|Load failed/i.test(m)) {
+        showError('连不上 Dify 服务（' + api.base + '）。可能是：① 不在校园网内，' +
+          '内网地址 172.17.1.46 在外网访问不到；② Dify 容器没启动。' +
+          '如果本页是 HTTPS 打开的，那还有一个更常见的原因：浏览器会拦住 HTTPS 页面' +
+          '对内网 HTTP 接口的请求。', '');
       } else {
         showError('初始化失败：' + m + '。可以直接打字试试。', '');
       }
