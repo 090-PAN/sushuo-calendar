@@ -1,0 +1,1176 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>宿说 · 广外南 AI 自律陪伴助手</title>
+<meta name="description" content="宿说 —— 广外南 AI 自律陪伴助手。宿舍事务一站式解决、心灵圆桌三视角陪聊、校园活动日历订阅、PHQ-9 / GAD-7 心晴测评。">
+<meta property="og:title" content="宿说 · 广外南 AI 自律陪伴助手">
+<meta property="og:description" content="宿舍事务 · 心灵圆桌 · 活动日历 · 心晴测评">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+<style>
+  :root{
+    --brand:#128a6e; --brand-d:#0c6b55; --brand-soft:#e1f5ee; --brand-line:#b7e3d5;
+    --bg:#f6f8f7; --card:#ffffff; --ink:#16211e; --sub:#5b6b66; --mute:#8b9a95;
+    --line:#e4ebe8; --warn:#c2410c; --warn-bg:#fff5ee; --warn-line:#fcd9c2;
+    --radius:16px; --shadow:0 6px 28px rgba(21,60,50,.07);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--ink); line-height:1.7;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",Segoe UI,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--brand);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  section{padding:56px 0}
+  h2{font-size:24px;margin:0 0 8px;letter-spacing:-.01em}
+  .sec-sub{color:var(--sub);font-size:15px;margin:0 0 26px}
+
+  /* ---------- nav ---------- */
+  header.nav{position:sticky;top:0;z-index:40;backdrop-filter:saturate(160%) blur(12px);
+    background:rgba(246,248,247,.82);border-bottom:1px solid var(--line)}
+  .nav-in{max-width:960px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px}
+  .logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:17px;letter-spacing:-.01em}
+  .logo .mark{width:32px;height:32px;border-radius:10px;background:var(--brand-soft);
+    display:grid;place-items:center;font-size:17px;border:1px solid var(--brand-line)}
+  .nav-links{display:flex;gap:20px;margin-left:auto;font-size:14px;color:var(--sub)}
+  .nav-links a{color:var(--sub)}
+  .nav-links a:hover{color:var(--brand);text-decoration:none}
+  @media(max-width:720px){ .nav-links{display:none} }
+
+  /* ---------- hero ---------- */
+  .hero{padding:64px 0 40px;text-align:center}
+  .badge{display:inline-flex;align-items:center;gap:7px;background:var(--brand-soft);color:var(--brand-d);
+    border:1px solid var(--brand-line);border-radius:999px;padding:5px 14px;font-size:13px;font-weight:600}
+  .hero h1{font-size:44px;line-height:1.25;margin:20px 0 14px;letter-spacing:-.03em}
+  .hero h1 em{font-style:normal;color:var(--brand)}
+  .hero p{font-size:17px;color:var(--sub);max-width:600px;margin:0 auto 30px}
+  @media(max-width:720px){ .hero{padding:44px 0 28px} .hero h1{font-size:32px} .hero p{font-size:15.5px} }
+  .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:13px 26px;border-radius:11px;font-weight:600;font-size:15.5px;
+    border:1px solid transparent;cursor:pointer;transition:.18s;font-family:inherit}
+  .btn.primary{background:var(--brand);color:#fff}
+  .btn.primary:hover{background:var(--brand-d);text-decoration:none;transform:translateY(-1px)}
+  .btn.ghost{background:#fff;color:var(--brand);border-color:var(--brand-line)}
+  .btn.ghost:hover{background:var(--brand-soft);text-decoration:none}
+  .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+  /* ---------- cards ---------- */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  @media(max-width:720px){ .grid{grid-template-columns:1fr} }
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px 22px 20px;box-shadow:var(--shadow)}
+  .card .ico{width:40px;height:40px;border-radius:11px;background:var(--brand-soft);
+    display:grid;place-items:center;font-size:19px;margin-bottom:14px;border:1px solid var(--brand-line)}
+  .card h3{font-size:16.5px;margin:0 0 6px}
+  .card p{font-size:14px;color:var(--sub);margin:0}
+  .card .tags{margin-top:12px;display:flex;gap:6px;flex-wrap:wrap}
+  .tag{font-size:12px;background:#f2f6f4;color:var(--mute);border-radius:6px;padding:2px 8px}
+
+  /* ---------- chat (self-built, no iframe) ---------- */
+  .chat-box{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;
+    height:640px}
+  @media(max-width:720px){ .chat-box{height:560px} }
+
+  .chat-head{display:flex;align-items:center;gap:10px;padding:13px 18px;
+    border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fbfdfc,#fff);flex:none}
+  .chat-head .av{width:30px;height:30px;border-radius:9px;background:var(--brand-soft);
+    border:1px solid var(--brand-line);display:grid;place-items:center;font-size:15px}
+  .chat-head .nm{font-weight:700;font-size:14.5px}
+  .chat-head .st{font-size:11.5px;color:var(--mute);display:flex;align-items:center;gap:5px}
+  .chat-head .dot{width:6px;height:6px;border-radius:99px;background:#22c55e;display:inline-block}
+  .chat-head .dot.off{background:#cbd5d1}
+  .chat-head .act{margin-left:auto;font-size:12.5px;color:var(--mute);cursor:pointer;
+    background:none;border:0;font-family:inherit;padding:4px 8px;border-radius:6px}
+  .chat-head .act:hover{background:#f2f6f4;color:var(--brand)}
+
+  .chat-log{flex:1;overflow-y:auto;padding:18px 18px 8px;display:flex;flex-direction:column;gap:14px;
+    scroll-behavior:smooth}
+  .chat-log::-webkit-scrollbar{width:6px}
+  .chat-log::-webkit-scrollbar-thumb{background:#d8e3df;border-radius:99px}
+
+  .msg{display:flex;gap:9px;max-width:100%}
+  .msg .ava{width:28px;height:28px;border-radius:8px;flex:none;display:grid;place-items:center;
+    font-size:14px;background:var(--brand-soft);border:1px solid var(--brand-line);margin-top:2px}
+  .msg .bub{padding:11px 14px;border-radius:12px;font-size:14.5px;line-height:1.72;
+    max-width:min(78%,620px);word-break:break-word;overflow-wrap:anywhere}
+  .msg.ai .bub{background:#f7faf9;border:1px solid var(--line);color:var(--ink);
+    border-top-left-radius:4px}
+  .msg.me{flex-direction:row-reverse}
+  .msg.me .ava{background:#e8eef6;border-color:#d3dded;font-size:13px}
+  .msg.me .bub{background:var(--brand);color:#fff;border-top-right-radius:4px}
+  .msg.sys .bub{background:var(--warn-bg);border:1px solid var(--warn-line);color:#7c2d12;
+    font-size:13.5px;max-width:100%}
+  /* 小程序链接：点了也没用，做成可选中复制的样式 */
+  .bub .mini{color:var(--brand-d);font-weight:600;border-bottom:1px dashed var(--brand-line);
+    cursor:text;user-select:all}
+
+  /* markdown inside bubble */
+  .bub p{margin:0 0 8px}
+  .bub p:last-child{margin-bottom:0}
+  .bub strong{font-weight:700}
+  .bub a{color:var(--brand-d);text-decoration:underline}
+  .msg.me .bub a{color:#fff}
+  .bub ul,.bub ol{margin:6px 0 8px;padding-left:20px}
+  .bub li{margin:3px 0}
+  .bub code{background:#eef3f1;padding:1px 5px;border-radius:4px;font-size:13px;
+    font-family:ui-monospace,Menlo,monospace}
+  .msg.me .bub code{background:rgba(255,255,255,.2)}
+  .bub pre{background:#f2f6f4;border:1px solid var(--line);border-radius:8px;padding:10px 12px;
+    overflow-x:auto;margin:8px 0;font-size:13px}
+  .bub pre code{background:none;padding:0}
+  .bub blockquote{border-left:3px solid var(--brand-line);margin:8px 0;padding:2px 0 2px 12px;
+    color:var(--sub)}
+  .bub hr{border:0;border-top:1px solid var(--line);margin:10px 0}
+
+  /* typing */
+  .typing{display:flex;gap:4px;align-items:center;padding:4px 2px}
+  .typing i{width:6px;height:6px;border-radius:99px;background:var(--mute);opacity:.5;
+    animation:bl 1.2s infinite}
+  .typing i:nth-child(2){animation-delay:.18s}
+  .typing i:nth-child(3){animation-delay:.36s}
+  @keyframes bl{0%,80%,100%{opacity:.28;transform:translateY(0)}
+    40%{opacity:1;transform:translateY(-3px)}}
+
+  .sugg{display:flex;gap:8px;flex-wrap:wrap;padding:0 0 4px}
+  .sugg button{background:#fff;border:1px solid var(--brand-line);color:var(--brand-d);
+    border-radius:99px;padding:7px 14px;font-size:13px;cursor:pointer;font-family:inherit;
+    transition:.15s}
+  .sugg button:hover{background:var(--brand-soft)}
+
+  .chat-in{flex:none;border-top:1px solid var(--line);padding:12px 14px;background:#fbfdfc}
+  .chat-in .row{display:flex;gap:9px;align-items:flex-end}
+  .chat-in textarea{flex:1;resize:none;border:1px solid var(--line);border-radius:11px;
+    padding:10px 13px;font-size:14.5px;font-family:inherit;line-height:1.55;color:var(--ink);
+    background:#fff;max-height:120px;min-height:44px;outline:none;transition:.15s}
+  .chat-in textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(18,138,110,.09)}
+  .chat-in .send{width:44px;height:44px;border-radius:11px;background:var(--brand);color:#fff;
+    border:0;cursor:pointer;display:grid;place-items:center;font-size:17px;flex:none;
+    transition:.15s}
+  .chat-in .send:hover{background:var(--brand-d)}
+  .chat-in .send:disabled{opacity:.4;cursor:not-allowed}
+  .chat-in .tip{font-size:11.5px;color:var(--mute);margin-top:8px;display:flex;
+    justify-content:space-between;gap:10px}
+
+  .chat-fallback{padding:44px 26px;text-align:center}
+  .chat-fallback .hint{font-size:13.5px;color:var(--mute);margin-top:14px;line-height:1.75}
+  .chat-fallback code{background:#f2f6f4;padding:2px 6px;border-radius:5px;font-size:12.5px;color:var(--brand-d)}
+
+  /* ---------- assessment ---------- */
+  .assess{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);overflow:hidden}
+  .assess-head{padding:22px 24px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fbfdfc,#fff)}
+  .assess-head h3{margin:0 0 4px;font-size:18px}
+  .assess-head p{margin:0;font-size:13.5px;color:var(--sub)}
+  .progress{height:5px;background:#eef3f1;border-radius:99px;overflow:hidden;margin-top:16px}
+  .progress > i{display:block;height:100%;width:0;background:var(--brand);border-radius:99px;
+    transition:width .25s ease}
+  .progress-txt{font-size:12.5px;color:var(--mute);margin-top:8px;display:flex;justify-content:space-between}
+  .assess-body{padding:8px 24px 24px}
+  .qgroup-t{font-size:13px;font-weight:700;color:var(--brand-d);text-transform:uppercase;
+    letter-spacing:.06em;margin:22px 0 4px;padding-top:16px;border-top:1px dashed var(--line)}
+  .qgroup-t:first-child{border-top:0;padding-top:6px}
+  .qgroup-d{font-size:12.5px;color:var(--mute);margin:0 0 10px}
+  .q{padding:14px 0;border-bottom:1px solid #f1f5f3}
+  .q:last-child{border-bottom:0}
+  .q-t{font-size:14.5px;margin-bottom:10px;display:flex;gap:9px}
+  .q-t b{color:var(--mute);font-weight:600;min-width:18px;flex:none;font-variant-numeric:tabular-nums}
+  .opts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  @media(max-width:560px){ .opts{grid-template-columns:repeat(2,1fr)} }
+  .opt{position:relative}
+  .opt input{position:absolute;opacity:0;width:0;height:0}
+  .opt label{display:block;text-align:center;padding:9px 6px;border:1px solid var(--line);
+    border-radius:9px;font-size:13px;color:var(--sub);cursor:pointer;transition:.15s;
+    background:#fcfdfd;user-select:none}
+  .opt label b{display:block;font-size:15px;color:var(--ink);font-weight:700;line-height:1.3}
+  .opt label span{font-size:11.5px;color:var(--mute)}
+  .opt input:checked + label{background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:0 3px 10px rgba(18,138,110,.25)}
+  .opt input:checked + label b{color:#fff}
+  .opt input:checked + label span{color:rgba(255,255,255,.8)}
+  .opt input:focus-visible + label{outline:2px solid var(--brand);outline-offset:2px}
+  .opt label:hover{border-color:var(--brand-line);background:var(--brand-soft)}
+  .opt input:checked + label:hover{background:var(--brand)}
+
+  .assess-foot{padding:18px 24px 24px;border-top:1px solid var(--line);display:flex;
+    gap:12px;align-items:center;flex-wrap:wrap;background:#fbfdfc}
+  .assess-foot .note{font-size:12.5px;color:var(--mute);flex:1;min-width:200px}
+  .toggle{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--sub);cursor:pointer;
+    padding:14px 0 4px;user-select:none}
+  .toggle input{width:17px;height:17px;accent-color:var(--brand);cursor:pointer}
+
+  /* result */
+  .result{display:none;padding:24px}
+  .result.on{display:block}
+  .score-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+  @media(max-width:560px){ .score-row{grid-template-columns:1fr} }
+  .score{background:#fbfdfc;border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .score .lbl{font-size:12.5px;color:var(--mute);letter-spacing:.04em}
+  .score .num{font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1.2;margin:2px 0}
+  .score .num small{font-size:14px;font-weight:600;color:var(--mute)}
+  .score .lv{font-size:13.5px;font-weight:600;color:var(--brand-d)}
+  .verdict{border-radius:12px;padding:16px 18px;font-size:14.5px;margin-bottom:16px;
+    background:var(--brand-soft);border:1px solid var(--brand-line);color:#0b4f40}
+  .verdict.crisis{background:var(--warn-bg);border-color:var(--warn-line);color:#7c2d12}
+  .verdict b{display:block;margin-bottom:4px;font-size:15px}
+  .result ul{margin:10px 0 0;padding-left:20px;font-size:14px;color:var(--sub)}
+  .result li{margin:5px 0}
+  .hotlines{margin-top:14px;padding-top:14px;border-top:1px solid var(--warn-line);font-size:13.5px}
+  .hotlines a{font-weight:600}
+  .result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+
+  /* ---------- calendar ---------- */
+  .cal{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:26px;box-shadow:var(--shadow)}
+  .cal .btns{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0 10px}
+  .steps{margin:16px 0 0;padding:0;list-style:none;display:grid;gap:9px}
+  .steps li{font-size:14px;color:var(--sub);display:flex;gap:10px}
+  .steps li b{color:var(--ink);flex:none}
+  .kbd{background:#f2f6f4;border:1px solid var(--line);border-radius:5px;padding:1px 6px;
+    font-size:12.5px;color:var(--brand-d);font-family:ui-monospace,Menlo,monospace}
+
+  /* ---------- crisis ---------- */
+  .crisis{border:1px solid var(--warn-line);background:var(--warn-bg);border-radius:var(--radius);padding:26px}
+  .crisis h2{color:#7c2d12;font-size:20px}
+  .crisis p{color:#9a4f28;font-size:14px;margin:6px 0 16px}
+  .crisis .rows{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  @media(max-width:720px){ .crisis .rows{grid-template-columns:1fr} }
+  .crisis .row{background:#fff;border:1px solid var(--warn-line);border-radius:10px;padding:12px 15px;
+    display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px}
+  .crisis .row span{color:#8a5a3a}
+  .crisis .row b{color:#7c2d12;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding:30px 0 46px;color:var(--mute);font-size:13px}
+  .foot-in{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+  .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .toast{position:fixed;left:50%;bottom:32px;transform:translate(-50%,14px);opacity:0;
+    background:#16211e;color:#fff;padding:11px 20px;border-radius:10px;font-size:14px;
+    pointer-events:none;transition:.24s;z-index:99}
+  .toast.on{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-in">
+    <div class="logo"><span class="mark">🌿</span>宿说</div>
+    <nav class="nav-links">
+      <a href="#features">能力</a>
+      <a href="#chat">在线体验</a>
+      <a href="#assess">心晴测评</a>
+      <a href="#calendar">活动日历</a>
+      <a href="#help">求助热线</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<div class="wrap">
+  <section class="hero">
+    <div class="badge">🌿 广外南 · AI 自律陪伴助手</div>
+    <h1>宿舍的事，<em>一句话</em>解决；<br>睡不着的时候，<em>有人陪你说</em>。</h1>
+    <p>报修流程、门禁查寝、校医院怎么走；压力大想说说话；这月有什么活动 —— 不用翻群消息、不用跑办公室，问它就行。</p>
+    <div class="cta">
+      <a class="btn primary" href="#chat">开始对话 →</a>
+      <a class="btn ghost" href="#assess">先做个心晴测评</a>
+    </div>
+  </section>
+</div>
+
+<!-- ================= FEATURES ================= -->
+<div class="wrap">
+  <section id="features">
+    <h2>四件事，它都能接</h2>
+    <p class="sec-sub">不是万能聊天机器人 —— 只做校园里真正会遇到的那几件事。</p>
+    <div class="grid">
+      <div class="card">
+        <div class="ico">🔧</div>
+        <h3>宿舍事务</h3>
+        <p>空调坏了怎么报修、热水几点停、门禁晚归怎么处理、校医院在哪 —— 给步骤，不给链接了事。</p>
+        <div class="tags"><span class="tag">报修流程</span><span class="tag">门禁查寝</span><span class="tag">就医报销</span><span class="tag">调宿换宿</span></div>
+      </div>
+      <div class="card">
+        <div class="ico">🌙</div>
+        <h3>心灵圆桌</h3>
+        <p>三个视角同时回应你：本我（先接住情绪）、自我（理清现实）、超我（看得远一点），再由主持汇总成一段话。不是三个 AI 轮着说教。</p>
+        <div class="tags"><span class="tag">三视角并行</span><span class="tag">跨轮记忆</span><span class="tag">不评判</span></div>
+      </div>
+      <div class="card">
+        <div class="ico">📅</div>
+        <h3>活动向导</h3>
+        <p>这月有什么活动、怎么报名、在哪办 —— 数据直连学校活动表，新活动两小时内同步进你的手机日历。</p>
+        <div class="tags"><span class="tag">实时同步</span><span class="tag">日历订阅</span><span class="tag">到点提醒</span></div>
+      </div>
+      <div class="card">
+        <div class="ico">🫧</div>
+        <h3>心晴测评</h3>
+        <p>PHQ-9 / GAD-7 标准量表，点选作答。分数由程序计算，不由模型估 —— 同一份答案永远得到同一个结果。</p>
+        <div class="tags"><span class="tag">代码计分</span><span class="tag">公开切点</span><span class="tag">第9题单题否决</span></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= CHAT (self-built) ================= -->
+<div class="wrap">
+  <section id="chat">
+    <h2>在线体验</h2>
+    <p class="sec-sub">就在这个页面里问，不用跳转。对话走 Dify 接口，行为和手机端完全一致。</p>
+    <div class="chat-box">
+      <div class="chat-head">
+        <div class="av">🌿</div>
+        <div>
+          <div class="nm">宿说</div>
+          <div class="st"><i class="dot off" id="chatDot"></i><span id="chatStatus">正在连接…</span></div>
+        </div>
+        <a class="act" id="chatOpen" href="http://172.17.1.46/chatbot/XgH70yw6DRBgNKuT"
+           target="_blank" rel="noopener" title="在新窗口打开完整版">完整版 ↗</a>
+        <button class="act" id="chatReset" type="button" title="开始新对话">新对话</button>
+      </div>
+
+      <div class="chat-log" id="chatLog" aria-live="polite"></div>
+
+      <div class="sugg" id="chatSugs" hidden style="padding:0 18px 10px"></div>
+
+      <form class="chat-in" id="chatForm" autocomplete="off">
+        <div class="row">
+          <textarea id="chatText" rows="1" placeholder="说点什么…（Enter 发送，Shift+Enter 换行）"
+                    aria-label="输入消息"></textarea>
+          <button type="submit" id="chatSend" class="send" title="发送" aria-label="发送">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor"
+                 stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 2 11 13"></path><path d="M22 2 15 22l-4-9-9-4Z"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="tip"><span>Enter 发送 · Shift+Enter 换行</span><span>对话经 Dify 接口，与手机端同源</span></div>
+      </form>
+    </div>
+  </section>
+</div>
+
+<!-- ================= ASSESSMENT ================= -->
+<div class="wrap">
+  <section id="assess">
+    <h2>心晴测评</h2>
+    <p class="sec-sub">最近<b>两周</b>，下面这些情况困扰你的频率是？点一下就行，不用打字。</p>
+
+    <div class="assess">
+      <div class="assess-head">
+        <h3>PHQ-9 ＋ GAD-7</h3>
+        <p>0 = 完全不会　1 = 好几天　2 = 一半以上的天数　3 = 几乎每天</p>
+        <div class="progress"><i id="bar"></i></div>
+        <div class="progress-txt"><span id="pTxt">已答 0 / 9 题</span><span>分数由程序计算，不经过模型</span></div>
+      </div>
+
+      <form class="assess-body" id="form" novalidate>
+        <div class="qgroup-t">第一部分 · 情绪（PHQ-9，9 题，必答）</div>
+        <p class="qgroup-d">过去两周，请按真实感受选择</p>
+        <div id="phqWrap"></div>
+
+        <label class="toggle" for="gadToggle">
+          <input type="checkbox" id="gadToggle">
+          <span>同时评估焦虑（GAD-7，7 题，选答）—— 勾上往下多答 7 题</span>
+        </label>
+        <div id="gadWrap" hidden>
+          <div class="qgroup-t">第二部分 · 焦虑（GAD-7，7 题）</div>
+          <p class="qgroup-d">同样按最近两周的频率</p>
+          <div id="gadList"></div>
+        </div>
+      </form>
+
+      <div class="assess-foot">
+        <div class="note">结果只在本页计算并显示，不会自动上传。想让它记住，可以点结果里的「复制作答」发给宿说。</div>
+        <button class="btn primary" id="submit" disabled>查看结果</button>
+      </div>
+
+      <div class="result" id="result"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= CALENDAR ================= -->
+<div class="wrap">
+  <section id="calendar">
+    <h2>活动日历订阅</h2>
+    <p class="sec-sub">一次订阅，活动自动进你的手机日历，到点弹提醒，新活动自动出现。</p>
+    <div class="cal">
+      <div class="btns">
+        <a id="subscribe" class="btn primary" href="#">一键订阅（自动同步）</a>
+        <a id="download" class="btn ghost" href="#">下载 .ics 导入</a>
+      </div>
+      <p style="font-size:13px;color:var(--mute);margin:0">
+        订阅 = 日历 App 每两小时自动回源拉取，活动有更新就自动改好；下载 = 一次性导入，之后要手动重导。
+      </p>
+      <ul class="steps">
+        <li><b>iPhone</b><span>设置 → 日历 → 账户 → 添加账户 → 其他 → 添加已订阅的日历，粘贴订阅地址（webcal 开头）。</span></li>
+        <li><b>安卓</b><span>系统日历 → 设置 → 添加日历 → 通过链接订阅（不同品牌入口略有差异）。</span></li>
+        <li><b>电脑</b><span>Outlook / Google 日历 →「通过 URL 添加日历」粘贴订阅地址。</span></li>
+        <li><b>退订</b><span>在「设置 → 日历 → 账户 → 已订阅的日历」里删除「广外南活动日程」即可，随时可退，不留记录。</span></li>
+      </ul>
+      <p style="font-size:12.5px;color:var(--mute);margin-top:16px">
+        订阅地址：<span class="kbd" id="icsUrl">…</span>
+      </p>
+    </div>
+  </section>
+</div>
+
+<!-- ================= CRISIS ================= -->
+<div class="wrap">
+  <section id="help">
+    <div class="crisis">
+      <h2>如果你现在很难受，先看这里</h2>
+      <p>不用先解释、不用先想清楚。打一个电话，或者走到有人的地方，就已经是在自救了。</p>
+      <div class="rows">
+        <div class="row"><span>全国心理援助热线</span><b>12356</b></div>
+        <div class="row"><span>广州市心理危机干预</span><b>020-81899120</b></div>
+        <div class="row"><span>已经出现行动冲动</span><b>120 / 110</b></div>
+        <div class="row"><span>广外心理中心</span><b><a href="https://psyheart.gdufs.edu.cn/" target="_blank" rel="noopener">在线预约 →</a></b></div>
+      </div>
+      <p style="margin:16px 0 0;font-size:13px">
+        「宿说」是陪伴者，不是专业帮助的替代。如果它判断你有风险，会把记录同步给辅导员 —— 这不是监控，是为了让一个人能接住你。
+      </p>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap foot-in">
+    <div>🌿 宿说 · 广外南 AI 自律陪伴助手</div>
+    <div>数据来自学校官方活动表，时间以主办方最新通知为准</div>
+  </div>
+</footer>
+
+<div class="toast" id="toast">已复制</div>
+
+<script>
+/* =====================================================================
+   配置区
+   apiBase : Dify API 根地址（注意结尾是 /v1）
+   apiKey  : Dify 应用「访问 API」里创建的服务端密钥（app- 开头）
+   ---------------------------------------------------------------------
+   ⚠ 安全说明：apiKey 写在前端 = 任何人按 F12 都能看到。本页面向的
+     是校内课程演示、且 Dify 本身在内网，可接受。若要公网长期运营，
+     必须加一层自己的后端做转发（把 key 留在服务端）。
+   ===================================================================== */
+var SUSHUO = {
+  apiBase: 'http://172.17.1.46/v1',
+  apiKey: 'app-QwZ9PQsPDuW6Yr8RQO7akOhw'
+};
+
+/* =====================================================================
+   自建对话前端（不用 iframe）
+   为什么不用 iframe：Dify 服务端 ALLOW_EMBED 默认 false，任何 iframe
+   （官方 embed / 气泡 / 纯 iframe / 侧边弹窗）都会被拒，页面只停在
+   加载动画。走 /v1/chat-messages API 可以完全绕开这个限制。
+   ===================================================================== */
+(function () {
+  var els = {
+    list: document.getElementById('chatLog'),
+    form: document.getElementById('chatForm'),
+    input: document.getElementById('chatText'),
+    send: document.getElementById('chatSend'),
+    chips: document.getElementById('chatSugs'),
+    status: document.getElementById('chatStatus'),
+    dot: document.getElementById('chatDot'),
+    reset: document.getElementById('chatReset')
+  };
+  if (!els.list || !els.form) return;
+
+  // ---------- 会话状态 ----------
+  var conversationId = '';
+  var userId = (function () {
+    var k = 'sushuo_uid';
+    try {
+      var v = localStorage.getItem(k);
+      if (!v) {
+        v = 'u_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+        localStorage.setItem(k, v);
+      }
+      return v;
+    } catch (e) {
+      return 'u_' + Math.random().toString(36).slice(2, 12);
+    }
+  })();
+
+  var sending = false;
+
+  // ---------- 工具 ----------
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function scrollBottom() {
+    els.list.scrollTop = els.list.scrollHeight;
+  }
+
+  // state: 'ok' | 'wait' | 'off'
+  function setStatus(txt, state) {
+    if (els.status) els.status.textContent = txt || '';
+    if (els.dot) els.dot.className = 'dot' + (state === 'ok' ? '' : ' off');
+  }
+
+  /* --- 极简 Markdown 渲染（不引外部库，内网也能跑） ---
+     支持：**粗体**、`行内代码`、[文字](链接)、- 列表、1. 列表、
+           > 引用、### 标题、--- 分隔线、段落、换行
+     刻意只做够用的子集，避免引 CDN 依赖。 */
+  function inlineMd(s) {
+    s = esc(s);
+    // 行内代码先占位，避免里面的符号被后续规则改写
+    var codes = [];
+    s = s.replace(/`([^`]+)`/g, function (m, c) {
+      codes.push(c);
+      return '\u0000' + (codes.length - 1) + '\u0000';
+    });
+    // 粗体
+    s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    // 链接：http(s) 渲染成可点，小程序协议渲染成微信复制提示，其余去掉括号只留文字
+    s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,
+      '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    s = s.replace(/\[([^\]]+)\]\((#小程序:[^)\s]+)\)/g,
+      '<span class="mini" title="$2">$1</span>');
+    // 其余协议（如 javascript: / foo:）只保留文字，防止误点
+    // 用 [\s\S]*? 惰性匹配到该行最后的 )，避免 URL 内部括号导致截断
+    s = s.replace(/\[([^\]]+)\]\((?!https?:|#小程序:)([^()\n]|\([^()\n]*\))*\)/g, '$1');
+    // 还原行内代码
+    s = s.replace(/\u0000(\d+)\u0000/g, function (m, i) {
+      return '<code>' + codes[+i] + '</code>';
+    });
+    return s;
+  }
+
+  function renderMd(text) {
+    var lines = String(text || '').split(/\r?\n/);
+    var out = [];
+    var listType = null;   // 'ul' | 'ol' | null
+    var para = [];
+
+    function flushPara() {
+      if (para.length) {
+        // 先逐行做行内渲染再拼 <br>，否则 <br> 会被 esc 转义成文本
+        out.push('<p>' + para.map(inlineMd).join('<br>') + '</p>');
+        para = [];
+      }
+    }
+    function flushList() {
+      if (listType) { out.push('</' + listType + '>'); listType = null; }
+    }
+    function closeAll() { flushPara(); flushList(); }
+
+    lines.forEach(function (raw) {
+      var line = raw.replace(/\s+$/, '');
+      if (!line.trim()) { closeAll(); return; }
+
+      if (/^---+$/.test(line.trim())) { closeAll(); out.push('<hr>'); return; }
+
+      var h = line.match(/^(#{1,4})\s+(.*)$/);
+      if (h) {
+        closeAll();
+        var lv = Math.min(h[1].length + 2, 6);   // ### -> h5，别抢页面 h2 的层级
+        out.push('<h' + lv + '>' + inlineMd(h[2]) + '</h' + lv + '>');
+        return;
+      }
+
+      var q = line.match(/^>\s?(.*)$/);
+      if (q) {
+        closeAll();
+        out.push('<blockquote>' + inlineMd(q[1]) + '</blockquote>');
+        return;
+      }
+
+      var ul = line.match(/^\s*[-*+]\s+(.*)$/);
+      if (ul) {
+        flushPara();
+        if (listType !== 'ul') { flushList(); out.push('<ul>'); listType = 'ul'; }
+        out.push('<li>' + inlineMd(ul[1]) + '</li>');
+        return;
+      }
+
+      var ol = line.match(/^\s*\d+[.)]\s+(.*)$/);
+      if (ol) {
+        flushPara();
+        if (listType !== 'ol') { flushList(); out.push('<ol>'); listType = 'ol'; }
+        out.push('<li>' + inlineMd(ol[1]) + '</li>');
+        return;
+      }
+
+      flushList();
+      para.push(line);
+    });
+
+    closeAll();
+    return out.join('');
+  }
+
+  /* --- 剥离  thinking 思考过程 ---
+     模型在 advanced-chat 下会把推理写在  thinking... response 里，且
+     标签可能被切分到不同 SSE 分片，所以用状态机而不是简单 replace。 */
+  function makeStripper() {
+    // 实测：该模型输出的是 "<think" （后面直接跟换行，不带 ">"），
+    // 闭合是 "</think>"。这里两种写法都兼容。
+    var OPEN = '<think';
+    var CLOSE = '</think>';
+    var state = 0;      // 0=还没判断开头 1=吞 think 内 2=正常输出
+    var buf = '';
+
+    return function (chunk) {
+      if (state === 2) return chunk;   // 已进入正文，后续分片原样放行
+      buf += chunk;
+
+      for (;;) {
+        if (state === 0) {
+          var lead = buf.replace(/^\s+/, '');
+          if (!lead) { buf = ''; return ''; }
+          if (lead.charAt(0) !== '<') {          // 不是标签，直接当正文
+            var o1 = buf; buf = ''; state = 2; return o1;
+          }
+          // 以 < 开头：可能是  thinking 的开头，也可能只是没收全
+          if (lead.length < OPEN.length) {
+            if (OPEN.indexOf(lead.toLowerCase()) === 0) { buf = lead; return ''; }  // 等后续
+            var o2 = buf; buf = ''; state = 2; return o2;
+          }
+          if (lead.slice(0, OPEN.length).toLowerCase() === OPEN) {
+            buf = lead.slice(OPEN.length);
+            state = 1;
+            continue;
+          }
+          var o3 = buf; buf = ''; state = 2; return o3;
+        }
+
+        if (state === 1) {
+          var i = buf.toLowerCase().indexOf(CLOSE);
+          if (i < 0) {
+            // 结尾可能是被切断的半个标签，留着等下一片，其余丢弃
+            buf = buf.slice(-(CLOSE.length - 1));
+            return '';
+          }
+          var out = buf.slice(i + CLOSE.length).replace(/^\s+/, '');
+          buf = '';
+          state = 2;
+          return out;
+        }
+
+        return '';
+      }
+    };
+  }
+
+  // ---------- 消息渲染 ----------
+  function addMsg(role, text) {
+    var row = document.createElement('div');
+    row.className = 'msg ' + (role === 'user' ? 'me' : (role === 'bot' ? 'ai' : 'sys'));
+    var av = document.createElement('div');
+    av.className = 'ava';
+    av.textContent = role === 'bot' ? '🌿' : '我';
+    var bubble = document.createElement('div');
+    bubble.className = 'bub';
+    if (role === 'bot') bubble.innerHTML = renderMd(text);
+    else bubble.textContent = text;
+    row.appendChild(av);
+    row.appendChild(bubble);
+    els.list.appendChild(row);
+    scrollBottom();
+    return bubble;
+  }
+
+  function addTyping() {
+    var row = document.createElement('div');
+    row.className = 'msg ai';
+    row.id = 'typingRow';
+    row.innerHTML = '<div class="ava">🌿</div>' +
+      '<div class="bub"><span class="typing"><i></i><i></i><i></i></span></div>';
+    els.list.appendChild(row);
+    scrollBottom();
+    return row;
+  }
+
+  function removeTyping() {
+    var r = document.getElementById('typingRow');
+    if (r && r.parentNode) r.parentNode.removeChild(r);
+  }
+
+  function showError(msg, retryText) {
+    var row = document.createElement('div');
+    row.className = 'msg sys';
+    row.innerHTML = '<div class="bub">' + esc(msg) +
+      (retryText ? '<br><button type="button" class="retry">重试</button>' : '') + '</div>';
+    els.list.appendChild(row);
+    scrollBottom();
+    if (retryText) {
+      row.querySelector('.retry').addEventListener('click', function () {
+        row.parentNode.removeChild(row);
+        send(retryText);
+      });
+    }
+  }
+
+  // ---------- 建议问题 ----------
+  function setChips(list) {
+    if (!els.chips) return;
+    els.chips.innerHTML = '';
+    if (!list || !list.length) { els.chips.hidden = true; return; }
+    els.chips.hidden = false;
+    list.forEach(function (q) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = q;
+      b.addEventListener('click', function () { send(q); });
+      els.chips.appendChild(b);
+    });
+  }
+
+  // ---------- 发送主流程 ----------
+  function send(text) {
+    text = (text == null ? '' : String(text)).trim();
+    if (!text || sending) return;
+
+    sending = true;
+    els.input.value = '';
+    autoGrow();
+    els.send.disabled = true;
+    setStatus('正在回复…', 'wait');
+
+    addMsg('user', text);
+    if (els.chips) els.chips.innerHTML = '';
+    var typing = addTyping();
+
+    var bubble = null;
+    var acc = '';
+    var stripper = makeStripper();
+    var painted = false;
+
+    function paint(chunk) {
+      var clean = stripper(chunk);
+      if (!clean) return;
+      acc += clean;
+      if (!bubble) {
+        removeTyping();
+        bubble = addMsg('bot', '');
+      }
+      bubble.innerHTML = renderMd(acc);
+      scrollBottom();
+    }
+
+    function finish() {
+      removeTyping();
+      if (!bubble && acc) bubble = addMsg('bot', acc);
+      if (!bubble && !acc) addMsg('bot', '（没有收到内容，请再试一次）');
+      sending = false;
+      els.send.disabled = false;
+      setStatus('在线', 'ok');
+      try { els.input.focus(); } catch (e) {}
+    }
+
+    function fail(msg) {
+      removeTyping();
+      sending = false;
+      els.send.disabled = false;
+      setStatus('未连接', 'off');
+      showError(msg, text);
+    }
+
+    fetch(SUSHUO.apiBase + '/chat-messages', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + SUSHUO.apiKey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        query: text,
+        user: userId,
+        response_mode: 'streaming',
+        conversation_id: conversationId || '',
+        inputs: {}
+      })
+    }).then(function (res) {
+      if (!res.ok) {
+        return res.text().then(function (t) {
+          throw new Error('HTTP ' + res.status + ' ' + (t || '').slice(0, 200));
+        });
+      }
+      if (!res.body || !res.body.getReader) {
+        // 老浏览器不支持流式
+        return res.text().then(function (t) {
+          // SSE 全文，按行解析
+          t.split('\n').forEach(function (l) {
+            if (l.indexOf('data:') !== 0) return;
+            try {
+              var d = JSON.parse(l.slice(5).trim());
+              if (d.event === 'message') paint(d.answer || '');
+              if (d.event === 'message_end' && d.conversation_id) conversationId = d.conversation_id;
+            } catch (e) {}
+          });
+          finish();
+        });
+      }
+
+      var reader = res.body.getReader();
+      var decoder = new TextDecoder('utf-8');
+      var buf = '';
+
+      function handleLine(line) {
+        if (line.indexOf('data:') !== 0) return;
+        var payload = line.slice(5).trim();
+        if (!payload || payload === '[DONE]') return;
+        var d;
+        try { d = JSON.parse(payload); } catch (e) { return; }
+
+        if (d.event === 'message' && d.answer) paint(d.answer);
+        if (d.event === 'message_end' && d.conversation_id) conversationId = d.conversation_id;
+        if (d.event === 'error') {
+          throw new Error(d.message || 'Dify 返回错误');
+        }
+      }
+
+      function pump() {
+        return reader.read().then(function (r) {
+          if (r.done) {
+            if (buf) handleLine(buf);
+            finish();
+            return;
+          }
+          buf += decoder.decode(r.value, { stream: true });
+          var idx;
+          while ((idx = buf.indexOf('\n')) >= 0) {
+            var line = buf.slice(0, idx).replace(/\r$/, '');
+            buf = buf.slice(idx + 1);
+            try { handleLine(line); } catch (e) { throw e; }
+          }
+          return pump();
+        });
+      }
+      return pump();
+    }).catch(function (err) {
+      var m = String(err && err.message || err);
+      if (/Failed to fetch|NetworkError|Load failed/i.test(m)) {
+        fail('连接不上 Dify（' + SUSHUO.apiBase + '）。请确认：① 已连校园网；' +
+             '② 本页是 HTTP 打开（HTTPS 页面会被浏览器拦截 HTTP 请求）。');
+      } else if (/401|403/.test(m)) {
+        fail('API 密钥无效或已过期（' + m + '）。请在 Dify 应用「访问 API」里重新生成，' +
+             '并更新本页 SUSHUO.apiKey。');
+      } else {
+        fail('出错了：' + m);
+      }
+    });
+  }
+
+  // ---------- 输入框自适应高度 ----------
+  function autoGrow() {
+    els.input.style.height = 'auto';
+    els.input.style.height = Math.min(els.input.scrollHeight, 120) + 'px';
+  }
+
+  if (els.input) {
+    els.input.addEventListener('input', autoGrow);
+    els.input.addEventListener('keydown', function (e) {
+      // Enter 发送，Shift+Enter 换行（中文输入法 composing 时不触发）
+      if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+        e.preventDefault();
+        send(els.input.value);
+      }
+    });
+  }
+  if (els.form) {
+    els.form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      send(els.input.value);
+    });
+  }
+
+  // ---------- 新对话 ----------
+  if (els.reset) {
+    els.reset.addEventListener('click', function () {
+      if (sending) return;
+      conversationId = '';
+      els.list.innerHTML = '';
+      els.chips.innerHTML = '';
+      els.chips.hidden = true;
+      boot();
+    });
+  }
+
+  // ---------- 初始化：拉开场白与建议问题 ----------
+  function boot() {
+    setStatus('正在连接…', 'wait');
+    fetch(SUSHUO.apiBase + '/parameters', {
+      headers: { 'Authorization': 'Bearer ' + SUSHUO.apiKey }
+    }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function (p) {
+      setStatus('在线', 'ok');
+      var opening = p.opening_statement || '你好，我是「宿说」。有什么想说的，直接打字就行。';
+      addMsg('bot', opening);
+      setChips(p.suggested_questions || []);
+    }).catch(function (err) {
+      setStatus('未连接', 'off');
+      var m = String(err && err.message || err);
+      if (/Failed to fetch|NetworkError/i.test(m)) {
+        showError('连不上 Dify 服务（' + SUSHUO.apiBase + '）。请确认：① 已连校园网；' +
+          '② 本页用 HTTP 打开 —— HTTPS 页面会被浏览器拦住对内网 HTTP 接口的请求。', '');
+      } else {
+        showError('初始化失败：' + m + '。可以直接打字试试。', '');
+      }
+      setChips(['宿舍空调坏了怎么报修？', '最近压力大，想找人聊聊', '这月有什么活动？', '我想做个心晴测评']);
+    });
+  }
+
+  boot();
+})();
+
+/* =====================================================================
+   日历
+   ===================================================================== */
+(function () {
+  var base = location.origin + location.pathname.replace(/index\.html$/, '');
+  if (base[base.length - 1] !== '/') base += '/';
+  var file = encodeURIComponent('广外南活动日程.ics');
+  var ics = base + file;
+  document.getElementById('download').href = ics;
+  document.getElementById('subscribe').href = ics.replace(/^https:/, 'webcal:');
+  document.getElementById('icsUrl').textContent = ics.replace(/^https:/, 'webcal:');
+})();
+
+/* =====================================================================
+   心晴测评 —— 计分规则与 Dify 里 code_eval_score 节点完全一致
+   ===================================================================== */
+(function () {
+  var PHQ = [
+    '做事时提不起劲或没有兴趣',
+    '感到心情低落、沮丧或绝望',
+    '入睡困难、睡不安稳或睡得太多',
+    '感觉疲倦或没有活力',
+    '食欲不振或吃太多',
+    '觉得自己很糟，或觉得自己很失败，让自己或家人失望',
+    '对事物专注有困难，例如看报纸或看电视时',
+    '动作或说话速度缓慢到别人已经察觉；或正好相反，烦躁、坐立不安、动来动去',
+    '有不如死掉或用某种方式伤害自己的念头'
+  ];
+  var GAD = [
+    '感到紧张、焦虑或急切',
+    '无法停止或控制担忧',
+    '对各种各样的事情担忧过多',
+    '很难放松下来',
+    '由于不安而无法静坐',
+    '变得容易烦恼或易怒',
+    '感到害怕，似乎有可怕的事要发生'
+  ];
+  var SCALE = [
+    { v: 0, t: '完全不会' },
+    { v: 1, t: '好几天' },
+    { v: 2, t: '一半以上天数' },
+    { v: 3, t: '几乎每天' }
+  ];
+
+  var PHQ_CUT = [[0, 4, '无/最小'], [5, 9, '轻度'], [10, 14, '中度'], [15, 19, '中重度'], [20, 27, '重度']];
+  var GAD_CUT = [[0, 4, '无/最小'], [5, 9, '轻度'], [10, 14, '中度'], [15, 21, '重度']];
+
+  function level(total, cut) {
+    for (var i = 0; i < cut.length; i++) {
+      if (total >= cut[i][0] && total <= cut[i][1]) return cut[i][2];
+    }
+    return '超出量表范围';
+  }
+
+  // ---- 渲染题目 ----
+  function renderQuestions(host, items, prefix, start) {
+    var html = '';
+    items.forEach(function (txt, i) {
+      var n = start + i;
+      html += '<div class="q"><div class="q-t"><b>' + n + '.</b><span>' + txt + '</span></div><div class="opts" role="radiogroup" aria-label="第 ' + n + ' 题">';
+      SCALE.forEach(function (o) {
+        var id = prefix + '_' + i + '_' + o.v;
+        html += '<div class="opt"><input type="radio" id="' + id + '" name="' + prefix + '_' + i + '" value="' + o.v + '">' +
+                '<label for="' + id + '"><b>' + o.v + '</b><span>' + o.t + '</span></label></div>';
+      });
+      html += '</div></div>';
+    });
+    host.innerHTML = html;
+  }
+
+  var phqWrap = document.getElementById('phqWrap');
+  var gadList = document.getElementById('gadList');
+  renderQuestions(phqWrap, PHQ, 'p', 1);
+  renderQuestions(gadList, GAD, 'g', 10);
+
+  var form = document.getElementById('form');
+  var bar = document.getElementById('bar');
+  var pTxt = document.getElementById('pTxt');
+  var submitBtn = document.getElementById('submit');
+  var gadToggle = document.getElementById('gadToggle');
+  var gadWrap = document.getElementById('gadWrap');
+  var result = document.getElementById('result');
+
+  function answered(prefix, n) {
+    var out = [];
+    for (var i = 0; i < n; i++) {
+      var el = form.querySelector('input[name="' + prefix + '_' + i + '"]:checked');
+      if (!el) return null;
+      out.push(parseInt(el.value, 10));
+    }
+    return out;
+  }
+
+  function needGad() { return gadToggle.checked; }
+
+  function refresh() {
+    var p = answered('p', 9);
+    var total = needGad() ? 16 : 9;
+    var done = p ? p.length : 0;
+    if (needGad()) {
+      var g = answered('g', 7);
+      done += g ? g.length : 0;
+    }
+    var pct = Math.round(done / total * 100);
+    bar.style.width = pct + '%';
+    pTxt.textContent = '已答 ' + done + ' / ' + total + ' 题';
+    var ok = p !== null && (!needGad() || answered('g', 7) !== null);
+    submitBtn.disabled = !ok;
+    submitBtn.textContent = ok ? '查看结果' : ('还差 ' + (total - done) + ' 题');
+  }
+
+  form.addEventListener('change', function (e) {
+    if (e.target === gadToggle) {
+      gadWrap.hidden = !gadToggle.checked;
+      if (!gadToggle.checked) {
+        gadList.querySelectorAll('input[type=radio]').forEach(function (r) { r.checked = false; });
+      }
+    }
+    refresh();
+    result.classList.remove('on');
+  });
+
+  // ---- 提交 ----
+  submitBtn.addEventListener('click', function () {
+    var phq = answered('p', 9);
+    if (!phq) return;
+    var gad = needGad() ? answered('g', 7) : null;
+
+    var phqTotal = phq.reduce(function (a, b) { return a + b; }, 0);
+    var q9 = phq[8];
+    var gadTotal = gad ? gad.reduce(function (a, b) { return a + b; }, 0) : null;
+
+    var phqLv = level(phqTotal, PHQ_CUT);
+    var gadLv = gad ? level(gadTotal, GAD_CUT) : '未作答';
+
+    // 建议：与 Dify 代码节点同一套规则
+    var advice = [];
+    if (q9 >= 1) advice.push('第 9 题非 0，按危机信号处理 —— 即使总分不高，这一题单独就有临床意义。');
+    if (phqTotal >= 20) advice.push('PHQ-9 重度：建议尽快到校心理中心面谈，或到医院精神科评估。');
+    else if (phqTotal >= 15) advice.push('PHQ-9 中重度：建议两周内预约校心理中心，做一次专业评估。');
+    else if (phqTotal >= 10) advice.push('PHQ-9 中度：建议主动预约一次校心理中心咨询，并保持规律作息。');
+    else if (phqTotal >= 5) advice.push('PHQ-9 轻度：可先做自助调节（运动、晒太阳、规律睡眠），两周后复测。');
+    else if (q9 === 0) advice.push('PHQ-9 无或最小：当前情绪状态良好，保持现有作息即可。');
+    if (gad) {
+      if (gadTotal >= 15) advice.push('GAD-7 重度：焦虑水平偏高，建议与抑郁结果一并转介专业评估。');
+      else if (gadTotal >= 10) advice.push('GAD-7 中度：建议学习呼吸放松或正念练习，必要时预约咨询。');
+      else if (gadTotal >= 5) advice.push('GAD-7 轻度：可用 4-2-6 呼吸法每天两次，观察两周。');
+      else advice.push('GAD-7 无或最小：焦虑水平在正常范围。');
+    } else {
+      advice.push('GAD-7 未作答（想评估焦虑，可勾上上面的选答再答 7 题）。');
+    }
+
+    var crisis = q9 >= 1;
+    var detail = 'PHQ9=' + phq.join('-') + '（总' + phqTotal + '）｜GAD7=' +
+                 (gad ? gad.join('-') + '（总' + gadTotal + '）' : '未作答');
+
+    // 给 Dify 的作答串：9 个或 16 个分值
+    var payload = phq.join('-') + (gad ? '-' + gad.join('-') : '');
+
+    var html = '';
+    html += '<div class="score-row">';
+    html += '<div class="score"><div class="lbl">PHQ-9 · 抑郁</div><div class="num">' + phqTotal +
+            ' <small>/ 27</small></div><div class="lv">' + phqLv + '</div></div>';
+    html += '<div class="score"><div class="lbl">GAD-7 · 焦虑</div><div class="num">' +
+            (gad ? gadTotal + ' <small>/ 21</small>' : '—') +
+            '</div><div class="lv">' + gadLv + '</div></div>';
+    html += '</div>';
+
+    if (crisis) {
+      html += '<div class="verdict crisis"><b>第 9 题 ' + q9 + ' 分 —— 我先陪你把这一刻稳住</b>' +
+              '你最近承受的东西，已经超出一个人硬扛的范围了。这不是矫情，是真的很难受。' +
+              '<ul>' +
+              '<li><b>先稳当下：</b>把脚踩实地面，慢慢吸气 4 秒、停 2 秒、呼气 6 秒，重复 3 次；找 5 样你看得见的东西，念出名字。</li>' +
+              '<li><b>离开高处：</b>如果你在天台、楼顶、窗边、水边，请先走到有人的地方，把门和灯打开。</li>' +
+              '<li><b>让一个人知道：</b>现在就联系一个具体的人，说「我现在状态很不好，需要你陪着我」。辅导员、宿管、室友、家人都可以。</li>' +
+              '</ul>' +
+              '<div class="hotlines">已经出现行动冲动，或身边没有人：<b>立刻拨 120 或 110</b>　·　全国心理援助热线 <b>12356</b>（24h）　·　广州 <b>020-81899120</b></div>' +
+              '</div>';
+    } else if ((gad && (phqTotal >= 10 || gadTotal >= 10))) {
+      html += '<div class="verdict"><b>这个分数值得认真对待</b>不是「想太多」，也不是「你不够坚强」。它说明最近两周你消耗得比较多，需要有人帮你一起看看。</div>';
+    } else if (phqTotal >= 5) {
+      html += '<div class="verdict"><b>在正常波动范围内，但有点累</b>这个水平通常是作息、学业压力堆出来的，调整两三天常能缓过来。如果两周后还是这样，再做一次。</div>';
+    } else {
+      html += '<div class="verdict"><b>状态不错</b>这两周你过得相对平稳。保持现在的作息就好。</div>';
+    }
+
+    html += '<div style="font-size:14px;color:var(--sub)"><b style="color:var(--ink)">接下来可以这样做</b><ul>';
+    advice.forEach(function (a) { html += '<li>' + a + '</li>'; });
+    html += '</ul></div>';
+
+    html += '<div style="font-size:12.5px;color:var(--mute);margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)">' +
+            detail + '<br>分数只是这两周的一个切面，不是对你的定义。</div>';
+
+    html += '<div class="result-actions">' +
+            '<button type="button" class="btn primary" id="copyPayload">复制作答，发给宿说</button>' +
+            '<button type="button" class="btn ghost" id="redo">重新做一次</button>' +
+            '</div>';
+
+    result.innerHTML = html;
+    result.classList.add('on');
+    result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    document.getElementById('copyPayload').addEventListener('click', function () {
+      copyText(payload, '已复制：' + payload);
+    });
+
+    document.getElementById('redo').addEventListener('click', function () {
+      form.reset();
+      gadWrap.hidden = true;
+      result.classList.remove('on');
+      refresh();
+      document.getElementById('assess').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  function copyText(txt, msg) {
+    var done = function () { toast(msg || '已复制'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(done, function () { legacy(); });
+    } else { legacy(); }
+    function legacy() {
+      var ta = document.createElement('textarea');
+      ta.value = txt;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); done(); } catch (e) { toast('复制失败，请手动选择'); }
+      document.body.removeChild(ta);
+    }
+  }
+
+  var toastEl = document.getElementById('toast');
+  var toastTimer;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('on'); }, 2200);
+  }
+
+  refresh();
+})();
+</script>
+</body>
+</html>
