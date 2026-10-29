@@ -1,0 +1,35 @@
+name: crisis-closure-watch
+
+# 危机闭环回执 · GitHub Actions 定时任务
+# 每 10 分钟扫一次飞书危机记录表，发现「处理状态」变为已跟进/已结案时，向老师群推绿色回执卡。
+# 幂等：靠表中「闭环回执」字段，重复运行不会重复推送。
+
+on:
+  schedule:
+    # 每 10 分钟（GitHub 免费额度下这是最密的合理值；实际触发可能延迟 1-5 分钟）
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}   # 支持手动触发一次
+
+concurrency:
+  group: crisis-closure
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run closure watcher
+        env:
+          FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
+          FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
+          FEISHU_BASE_ID: ${{ secrets.FEISHU_BASE_ID }}
+          FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_BOT_WEBHOOK }}
+        run: |
+          python crisis_closure_watch.py --once
