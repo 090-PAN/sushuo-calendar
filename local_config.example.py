@@ -5,3 +5,7 @@
 APP_ID = "在此填入飞书 App ID"
 APP_SECRET = "在此填入飞书 App Secret"
 BASE_ID = "在此填入飞书多维表格 Base ID"
+
+# 危机通知群机器人（可选；仅本地跑 crisis_closure_watch.py 时需要）
+# 形如 https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxx
+FEISHU_BOT_WEBHOOK = ""
