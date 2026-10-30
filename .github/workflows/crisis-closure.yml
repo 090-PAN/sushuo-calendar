@@ -36,6 +36,8 @@ jobs:
           FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
           FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
           FEISHU_BASE_ID: ${{ secrets.FEISHU_BASE_ID }}
+        run: |
+          python crisis_closure_watch.py --once
           FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_BOT_WEBHOOK }}
         run: |
           python crisis_closure_watch.py --once
